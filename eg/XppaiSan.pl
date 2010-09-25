@@ -17,20 +17,19 @@ my $irc = irc
     };
 
 my $irc2 = irc
-    'chat.example.net',
+    'chat.xample.net',
     key      => 'example2',
     nickname => 'AnySan2',
     channels => {
-        '#anysan1' => {},
-        '#anysan2' => {},
+        '#anysan' => {},
     };
 
 my $timer; $timer = AnyEvent->timer(
     interval => 55,
     cb => sub {
-        for (qw( #anysan1 #anysan2 )) {
-            $irc->send_chan( $_, "NOTICE", $_, "??" );
-            $irc2->send_chan( $_, "NOTICE", $_, "????" );
+        for ('#anysan1', '#anysan2' ) {
+            $irc->send_chan( $_, 'NOTICE', $_, '??' );
+            $irc2->send_chan( $_, 'NOTICE', $_, '????' );
         }
     }
 );
@@ -38,8 +37,9 @@ my $timer; $timer = AnyEvent->timer(
 AnySan->register_listener(
     yappo => {
         cb => sub {
-            my $msg = shift;
-            return unless $msg =~ /^!yappo/;
+            my $receive = shift;
+            return unless $receive->message =~ /^!yappo/;
+            $receive->send_replay('poppo---!');
             return 'yes!';
         },
     },

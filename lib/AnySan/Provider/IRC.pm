@@ -32,23 +32,29 @@ sub irc {
     );
 
     $con->reg_cb (
-        'irc_privmsg' => sub {
+        'irc_*' => sub {
             my(undef, $param) = @_;
+            return if $param->{command} =~ /\A[0-9]+\z/;
             my($channel, $message) = @{ $param->{params} };
             my($nickname, ) = split '!', $param->{prefix};
 
-            my $receive; $receive = AnySan::Receive->new(
-                provider      => 'irc',
-                event         => 'privmsg',
-                message       => $message,
-                nickname      => $config{nickname},
-                from_nickname => $nickname,
-                attribute     => {
-                    channel => $channel,
-                },
-                cb            => sub { event_callback($receive, $con, @_) },
-            );
-            AnySan->broadcast_message($receive);
+
+            if ($param->{command} ne 'PRIVMSG' ||$param->{command} ne 'NOTICE') {
+                my $receive; $receive = AnySan::Receive->new(
+                    provider      => 'irc',
+                    event         => 'privmsg',
+                    message       => $message,
+                    nickname      => $config{nickname},
+                    from_nickname => $nickname,
+                    attribute     => {
+                        channel => $channel,
+                    },
+                    cb            => sub { event_callback($receive, $con, @_) },
+                );
+                AnySan->broadcast_message($receive);
+            } else {
+                AnySan->broadcast_message();
+            }
         }
     );
 
