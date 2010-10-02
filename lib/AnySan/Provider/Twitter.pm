@@ -26,6 +26,7 @@ sub twitter {
         token           => $config{token},
         token_secret    => $config{token_secret},
         method          => $config{method} || 'userstream',
+        track           => $config{track}  || '',
         on_tweet => sub {
             my $tweet = shift;
             my $receive; $receive = AnySan::Receive->new(
