@@ -20,13 +20,17 @@ sub twitter {
         access_token_secret => $config{token_secret},
     );
 
-    my $listener = AnyEvent::Twitter::Stream->new(
+    my %opts = (
         consumer_key    => $config{consumer_key},
         consumer_secret => $config{consumer_secret},
         token           => $config{token},
         token_secret    => $config{token_secret},
         method          => $config{method} || 'userstream',
-        track           => $config{track}  || '',
+    );
+    $opts{track} = $config{track} if defined $config{track};
+
+    my $listener = AnyEvent::Twitter::Stream->new(
+        %opts,
         on_tweet => sub {
             my $tweet = shift;
             my $receive; $receive = AnySan::Receive->new(
