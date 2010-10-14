@@ -40,8 +40,9 @@ sub twitter {
                 nickname      => $config{nickname},
                 from_nickname => $tweet->{user}->{screen_name},
                 attribute     => {
-                    geo      => $tweet->{geo},
-                    icon_url => $tweet->{user}->{profile_image_url},
+                    geo        => $tweet->{geo},
+                    icon_url   => $tweet->{user}->{profile_image_url},
+                    created_at => $tweet->{created_at},
                 },
                 cb            => sub { event_callback($receive, $poster, @_) },
             );
