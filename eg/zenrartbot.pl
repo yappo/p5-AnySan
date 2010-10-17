@@ -7,8 +7,6 @@ use utf8;
 use AnySan::Provider::Twitter;
 use Config::Pit;
 
-my $username = shift;
-
 my $config = pit_get('zenrabot', require => {
     consumer_key    => 'your twitter consumer_key',
     consumer_secret => 'your twitter consumer_secret',
@@ -20,13 +18,6 @@ my $twitter = twitter
     %{ $config },
     method          => 'userstream',
     ;
-
-my $timer; $timer = AnyEvent->timer(
-    after => 10,
-    cb => sub {
-        $twitter->send_message('#yapcasia test: ' . time);
-    }
-);
 
 AnySan->register_listener(
     zenrart => {
