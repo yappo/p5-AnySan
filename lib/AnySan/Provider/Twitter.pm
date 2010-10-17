@@ -53,7 +53,7 @@ sub twitter {
             AnySan->broadcast_message($receive);
 
         },
-        timeout => $config{timeout} || 120,
+        timeout => $config{timeout},
     );
     $self->{listener} = $listener;
 
