@@ -36,7 +36,7 @@ sub irc {
             my(undef, $param) = @_;
             return if $param->{command} =~ /\A[0-9]+\z/;
             my($channel, $message) = @{ $param->{params} };
-            my($nickname, ) = split '!', $param->{prefix};
+            my($nickname, ) = split '!', ($param->{prefix} || '');
 
 
             if ($param->{command} ne 'PRIVMSG' ||$param->{command} ne 'NOTICE') {
