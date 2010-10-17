@@ -8,12 +8,10 @@ use AnySan::Receive;
 use AnyEvent::Twitter;
 use AnyEvent::Twitter::Stream;
 
-use Net::Twitter::Lite;
-
 sub twitter {
     my(%config) = @_;
 
-    my $poster = Net::Twitter::Lite->new(
+    my $poster = AnyEvent::Twitter->new(
         consumer_key        => $config{consumer_key},
         consumer_secret     => $config{consumer_secret},
         access_token        => $config{token},
@@ -57,7 +55,14 @@ sub event_callback {
     my($receive, $poster, $type, @args) = @_;
 
     if ($type eq 'reply') {
-        $poster->update({ status => $args[0] });
+        $poster->request(
+            api    => 'statuses/update',
+            method => 'POST',
+            params => {
+                status => $args[0],
+            },
+            sub {}
+        );
     }
 }
 
