@@ -1,7 +1,7 @@
 package AnySan::Provider::IRC;
 use strict;
 use warnings;
-use base 'Exporter';
+use base 'AnySan::Provider';
 our @EXPORT = qw(irc);
 use AnySan;
 use AnySan::Receive;
@@ -9,10 +9,13 @@ use AnyEvent::IRC::Client;
 use AnyEvent::IRC::Util qw/mk_msg/;
 use Encode;
 
-my %connections;
-
 sub irc {
     my($host, %config) = @_;
+
+    my $self = __PACKAGE__->new(
+        client => undef,
+        config => \%config,
+    );
 
     my $port         = $config{port}     || 6667;
     my $nickname     = $config{nickname};
@@ -21,6 +24,8 @@ sub irc {
     my @channels = keys %{ $config{channels} };
 
     my $con = AnyEvent::IRC::Client->new;
+    $self->{client} = $con;
+
     $con->reg_cb(
         connect =>sub {
             my ($con, $err) = @_;
@@ -49,7 +54,7 @@ sub irc {
                     attribute     => {
                         channel => $channel,
                     },
-                    cb            => sub { event_callback($receive, $con, @_) },
+                    cb            => sub { $self->event_callback($receive, $con, @_) },
                 );
                 AnySan->broadcast_message($receive);
             } else {
@@ -68,12 +73,12 @@ sub irc {
         $con->send_srv( JOIN => $channel, $conf->{key} );
     }
 
-    $connections{$instance_key} = $con;
+    return $self;
 }
 
 
 sub event_callback {
-    my($receive, $con, $type, @args) = @_;
+    my($self, $receive, $type, @args) = @_;
 
     if ($type eq 'reply') {
         my $cmd = $receive->attribute('send_command') || 'NOTICE';
@@ -85,8 +90,19 @@ sub event_callback {
         } else {
             $send = mk_msg undef, $cmd => $receive->attribute('channel'), $msg;
         }
-        $con->send_raw($send);
+        $self->{client}->send_raw($send);
     }
+}
+
+sub send_message {
+    my($self, $message, %args) = @_;
+
+    $self->{client}->send_chan(
+        $args{channel},
+        'NOTICE',
+        $args{channel},
+        $message,
+    );
 }
 
 1;

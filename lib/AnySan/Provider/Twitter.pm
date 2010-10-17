@@ -1,7 +1,7 @@
 package AnySan::Provider::Twitter;
 use strict;
 use warnings;
-use base 'Exporter';
+use base 'AnySan::Provider';
 our @EXPORT = qw(twitter);
 use AnySan;
 use AnySan::Receive;
@@ -11,12 +11,18 @@ use AnyEvent::Twitter::Stream;
 sub twitter {
     my(%config) = @_;
 
+    my $self = __PACKAGE__->new(
+        client => undef,
+        config => \%config,
+    );
+
     my $poster = AnyEvent::Twitter->new(
         consumer_key        => $config{consumer_key},
         consumer_secret     => $config{consumer_secret},
         access_token        => $config{token},
         access_token_secret => $config{token_secret},
     );
+    $self->{poster} = $poster;
 
     my %opts = (
         consumer_key    => $config{consumer_key},
@@ -42,20 +48,23 @@ sub twitter {
                     icon_url   => $tweet->{user}->{profile_image_url},
                     created_at => $tweet->{created_at},
                 },
-                cb            => sub { event_callback($receive, $poster, @_) },
+                cb            => sub { $self->event_callback($receive, @_) },
             );
             AnySan->broadcast_message($receive);
 
         },
         timeout => $config{timeout} || 120,
     );
+    $self->{listener} = $listener;
+
+    return $self;
 }
 
 sub event_callback {
-    my($receive, $poster, $type, @args) = @_;
+    my($self, $receive, $type, @args) = @_;
 
     if ($type eq 'reply') {
-        $poster->request(
+        $self->{poster}->request(
             api    => 'statuses/update',
             method => 'POST',
             params => {
@@ -66,5 +75,17 @@ sub event_callback {
     }
 }
 
+sub send_message {
+    my($self, $message, %args) = @_;
+
+    $self->{poster}->request(
+        api    => 'statuses/update',
+        method => 'POST',
+        params => {
+            status => $message,
+        },
+        sub {}
+    );
+}
 
 1;
