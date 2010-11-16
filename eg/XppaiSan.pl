@@ -40,7 +40,7 @@ AnySan->register_listener(
         cb => sub {
             my $receive = shift;
             return unless $receive->message =~ /^!yappo/;
-            $receive->send_replay('poppo---!');
+            $receive->send_reply('poppo---!');
             return 'yes!';
         },
     },
