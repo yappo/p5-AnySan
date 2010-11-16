@@ -78,7 +78,7 @@ sub irc {
 
 
 sub event_callback {
-    my($self, $receive, $type, @args) = @_;
+    my($self, $receive, $con, $type, @args) = @_;
 
     if ($type eq 'reply') {
         my $cmd = $receive->attribute('send_command') || 'NOTICE';

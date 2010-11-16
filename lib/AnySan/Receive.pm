@@ -28,5 +28,8 @@ sub send_reply {
 }
 *send_replay = *send_reply;
 
+# for backward compatible
+*send_replay = \&send_reply;
+
 1;
 
