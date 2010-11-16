@@ -21,15 +21,16 @@ my $irc2 = irc
     key      => 'example2',
     nickname => 'AnySan2',
     channels => {
-        '#anysan' => {},
+        '#anysan1' => {},
+        '#anysan2' => {},
     };
 
 my $timer; $timer = AnyEvent->timer(
     interval => 55,
     cb => sub {
         for ('#anysan1', '#anysan2' ) {
-            $irc->send_chan( $_, 'NOTICE', $_, '??' );
-            $irc2->send_chan( $_, 'NOTICE', $_, '????' );
+            $irc->send_message( '??', channel => $_ );
+            $irc2->send_message( '????', channel => $_ );
         }
     }
 );
