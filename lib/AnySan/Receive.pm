@@ -26,7 +26,6 @@ sub send_reply {
         reply => $message
     );
 }
-*send_replay = *send_reply;
 
 # for backward compatible
 *send_replay = \&send_reply;
