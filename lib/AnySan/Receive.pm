@@ -20,12 +20,15 @@ sub attribute {
     return $self->{attribute};
 }
 
-sub send_replay {
+sub send_reply {
     my($self, $message) = @_;
     $self->{cb}->(
         reply => $message
     );
 }
+
+# for backward compatible
+*send_replay = \&send_reply;
 
 1;
 

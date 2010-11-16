@@ -27,7 +27,7 @@ AnySan->register_listener(
             return unless $receive->message;
             return unless $receive->message =~ /全裸/;
             return if $receive->message =~ /^RT /;
-            $receive->send_replay(sprintf 'RT @%s: %s', $receive->from_nickname, $receive->message);
+            $receive->send_reply(sprintf 'RT @%s: %s', $receive->from_nickname, $receive->message);
         },
     },
 );

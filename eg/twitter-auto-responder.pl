@@ -29,7 +29,7 @@ AnySan->register_listener(
             my $receive = shift;
             return unless $receive->message;
             return unless $receive->message =~ /^\@$username\s*(.+)$/;
-            $receive->send_replay(sprintf '@%s txh %s', $receive->from_nickname, $1);
+            $receive->send_reply(sprintf '@%s txh %s', $receive->from_nickname, $1);
         },
     },
 );
