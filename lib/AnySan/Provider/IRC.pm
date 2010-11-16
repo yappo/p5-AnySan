@@ -53,6 +53,7 @@ sub irc {
                     from_nickname => $nickname,
                     attribute     => {
                         channel => $channel,
+                        command => $param->{command},
                     },
                     cb            => sub { $self->event_callback($receive, @_) },
                 );
