@@ -54,7 +54,7 @@ sub irc {
                     attribute     => {
                         channel => $channel,
                     },
-                    cb            => sub { $self->event_callback($receive, $con, @_) },
+                    cb            => sub { $self->event_callback($receive, @_) },
                 );
                 AnySan->broadcast_message($receive);
             } else {
