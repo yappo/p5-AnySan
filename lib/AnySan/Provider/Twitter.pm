@@ -24,38 +24,39 @@ sub twitter {
     );
     $self->{poster} = $poster;
 
-    my %opts = (
-        consumer_key    => $config{consumer_key},
-        consumer_secret => $config{consumer_secret},
-        token           => $config{token},
-        token_secret    => $config{token_secret},
-        method          => $config{method} || 'userstream',
-    );
-    $opts{track} = $config{track} if defined $config{track};
+    if ($config{method} ne 'none') {
+        my %opts = (
+            consumer_key    => $config{consumer_key},
+            consumer_secret => $config{consumer_secret},
+            token           => $config{token},
+            token_secret    => $config{token_secret},
+            method          => $config{method} || 'userstream',
+        );
+        $opts{track} = $config{track} if defined $config{track};
 
-    my $listener = AnyEvent::Twitter::Stream->new(
-        %opts,
-        on_tweet => sub {
-            my $tweet = shift;
-            my $receive; $receive = AnySan::Receive->new(
-                provider      => 'twitter',
-                event         => 'timeline',
-                message       => $tweet->{text},
-                nickname      => $config{nickname},
-                from_nickname => $tweet->{user}->{screen_name},
-                attribute     => {
-                    geo        => $tweet->{geo},
-                    icon_url   => $tweet->{user}->{profile_image_url},
-                    created_at => $tweet->{created_at},
-                },
-                cb            => sub { $self->event_callback($receive, @_) },
-            );
-            AnySan->broadcast_message($receive);
-
-        },
-        timeout => $config{timeout},
-    );
-    $self->{listener} = $listener;
+        my $listener = AnyEvent::Twitter::Stream->new(
+            %opts,
+            on_tweet => sub {
+                my $tweet = shift;
+                my $receive; $receive = AnySan::Receive->new(
+                    provider      => 'twitter',
+                    event         => 'timeline',
+                    message       => $tweet->{text},
+                    nickname      => $config{nickname},
+                    from_nickname => $tweet->{user}->{screen_name},
+                    attribute     => {
+                        geo        => $tweet->{geo},
+                        icon_url   => $tweet->{user}->{profile_image_url},
+                        created_at => $tweet->{created_at},
+                    },
+                    cb            => sub { $self->event_callback($receive, @_) },
+                );
+                AnySan->broadcast_message($receive);
+            },
+            timeout => $config{timeout},
+        );
+        $self->{listener} = $listener;
+    }
 
     return $self;
 }
@@ -83,6 +84,7 @@ sub send_message {
         method => 'POST',
         params => {
             status => $message,
+            %{ $args{params} || +{} },
         },
         sub {}
     );
