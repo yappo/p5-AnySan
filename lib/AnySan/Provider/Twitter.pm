@@ -32,7 +32,9 @@ sub twitter {
             token_secret    => $config{token_secret},
             method          => $config{method} || 'userstream',
         );
-        $opts{track} = $config{track} if defined $config{track};
+        for my $param qw(track follow locations) {
+            $opts{$param} = $config{$param} if defined $config{$param};
+        }
 
         my $listener = AnyEvent::Twitter::Stream->new(
             %opts,
