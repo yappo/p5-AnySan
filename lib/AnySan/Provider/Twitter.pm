@@ -32,7 +32,7 @@ sub twitter {
             token_secret    => $config{token_secret},
             method          => $config{method} || 'userstream',
         );
-        for my $param qw(track follow locations) {
+        for my $param (qw/track follow locations/) {
             $opts{$param} = $config{$param} if defined $config{$param};
         }
 
