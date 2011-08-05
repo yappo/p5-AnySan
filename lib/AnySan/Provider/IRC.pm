@@ -65,7 +65,10 @@ sub irc {
     );
 
     # connect server
-    $con->connect ($host, $port, { nick => $nickname });
+    $con->connect ($host, $port, {
+        nick     => $nickname,
+        password => $config{password},
+    });
 
     # join channels
     for my $channel (@channels) {
