@@ -74,7 +74,7 @@ sub irc {
     for my $channel (@channels) {
         my $conf = $config{channels}->{$channel};
         warn "join channel: $channel";
-        $con->send_srv( JOIN => $channel, $conf->{key} );
+        $self->join_channel( $channel, $conf->{key} );
     }
 
     return $self;
@@ -107,6 +107,16 @@ sub send_message {
         $args{channel},
         $message,
     );
+}
+
+sub join_channel {
+    my($self, $channel, $key) = @_;
+    $self->{client}->send_srv( JOIN => $channel, $key );
+}
+
+sub leave_channel {
+    my($self, $channel) = @_;
+    $self->{client}->send_srv( PART => $channel );
 }
 
 1;
