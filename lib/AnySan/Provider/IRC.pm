@@ -21,6 +21,10 @@ sub irc {
     my $nickname     = $config{nickname};
     my $instance_key = $config{key}      || "$host:$port";
 
+    my %recive_commands = map {
+        uc($_) => 1,
+    } @{ $config{recive_commands} || [ 'PRIVMSG' ] };
+
     my @channels = keys %{ $config{channels} };
 
     my $con = AnyEvent::IRC::Client->new;
@@ -40,27 +44,23 @@ sub irc {
         'irc_*' => sub {
             my(undef, $param) = @_;
             return if $param->{command} =~ /\A[0-9]+\z/;
+            return unless $recive_commands{uc($param->{command})};
             my($channel, $message) = @{ $param->{params} };
             my($nickname, ) = split '!', ($param->{prefix} || '');
 
-
-            if ($param->{command} ne 'PRIVMSG' ||$param->{command} ne 'NOTICE') {
-                my $receive; $receive = AnySan::Receive->new(
-                    provider      => 'irc',
-                    event         => 'privmsg',
-                    message       => $message,
-                    nickname      => $config{nickname},
-                    from_nickname => $nickname,
-                    attribute     => {
-                        channel => $channel,
-                        command => $param->{command},
-                    },
-                    cb            => sub { $self->event_callback($receive, @_) },
-                );
-                AnySan->broadcast_message($receive);
-            } else {
-                AnySan->broadcast_message();
-            }
+            my $receive; $receive = AnySan::Receive->new(
+                provider      => 'irc',
+                event         => 'privmsg',
+                message       => $message,
+                nickname      => $config{nickname},
+                from_nickname => $nickname,
+                attribute     => {
+                    channel => $channel,
+                    command => $param->{command},
+                },
+                cb            => sub { $self->event_callback($receive, @_) },
+            );
+            AnySan->broadcast_message($receive);
         }
     );
 
