@@ -37,21 +37,46 @@ __END__
 
 =head1 NAME
 
-AnySan -
+AnySan - ANY mesSaging protocol hANdler
 
 =head1 SYNOPSIS
 
+  # echo bot
   use AnySan;
+  use AnySan::Provider::IRC;
+
+  my $irc = irc
+      'chat.example.net',
+      key      => 'example1',
+      nickname => 'AnySan1',
+      channels => {
+          '#anysan1' => {},
+          '#anysan2' => {},
+      };
+
+  AnySan->register_listener(
+      echo => {
+          cb => sub {
+              my $receive = shift;
+              return unless $receive->message =~ /^!yappo/;
+              $receive->send_replay($receive->message);
+          }
+      }
+  );
+
+  AnySan->run;
 
 =head1 DESCRIPTION
 
-AnySan is
+AnySan is L<AnyEvent> based some messaging protocol handling program tool kit.
 
 =head1 AUTHOR
 
 Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
 
 =head1 SEE ALSO
+
+L<AnyEvent>
 
 =head1 LICENSE
 
