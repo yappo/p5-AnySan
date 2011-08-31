@@ -101,9 +101,11 @@ sub event_callback {
 sub send_message {
     my($self, $message, %args) = @_;
 
+    my $type = $args{privmsg} ? 'PRIVMSG' : 'NOTICE';
+
     $self->{client}->send_chan(
         $args{channel},
-        'NOTICE',
+        $type,
         $args{channel},
         $message,
     );
