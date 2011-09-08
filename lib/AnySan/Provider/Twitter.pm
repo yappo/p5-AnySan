@@ -50,6 +50,7 @@ sub twitter {
                         geo        => $tweet->{geo},
                         icon_url   => $tweet->{user}->{profile_image_url},
                         created_at => $tweet->{created_at},
+                        obj        => $tweet,
                     },
                     cb            => sub { $self->event_callback($receive, @_) },
                 );
