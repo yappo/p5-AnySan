@@ -17,3 +17,8 @@
 ^[^/]+\.yaml$
 ^[^/]+\.pl$
 ^\.shipit$
+^\.git
+.*\.swp
+MYMETA.json
+MYMETA.yml
+META.yml
