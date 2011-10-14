@@ -123,3 +123,48 @@ sub leave_channel {
 
 1;
 __END__
+
+=head1 NAME
+
+AnySan::Provider::IRC - AnySan provide IRC protocol
+
+=head1 SYNOPSIS
+
+  use AnySan;
+  use AnySan::Provider::IRC;
+
+  my $irc = irc
+      'chat.example.net', # irc servername *required
+      port     => 6667, # default is 6667
+      password => 'server_password',
+      key      => 'example1', # you can write, unique key *required
+      nickname => 'AnySan1',  # irc nickname *required
+      recive_commands => [ 'PRIVMSG', 'NOTICE' ], # default is [ 'PRIVMSG' ]
+      channels => {
+          '#anysan1' => {},
+          '#anysan2' => {
+              key => 'channel_key',
+          },
+      };
+
+  $irc->send_message('irc message', channel => '#irc_channel');
+  $irc->send_message('irc message', channel => '#irc_channel', privmsg => 'PRIVMSG');
+
+  $irc->join_channel('#channel');
+  $irc->join_channel('#channel', 'channel_key');
+  $irc->leave_channel('#channel');
+
+=head1 AUTHOR
+
+Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
+
+=head1 SEE ALSO
+
+L<AnySan>, L<AnyEvent::IRC::Client>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

@@ -31,4 +31,39 @@ sub send_reply {
 *send_replay = \&send_reply;
 
 1;
+__END__
 
+=head1 NAME
+
+AnySan::Receive - recive messages manipulate object
+
+=head1 SYNOPSIS
+
+  AnySan->register_listener(
+      synopsis => {
+          cb => sub {
+              my $receive = shift; # get AnySan::Receive object
+              $receive->event; # irc's NOTICE or PRIVMSG
+              $receive->nickname; # your nickname
+              $receive->from_nickname; # nickname of message writer
+              $receive->message; # recive message
+              my $geo = $receive->attribute('geo'); # twitter's geo object
+              $receive->send_replay('message'); # sending message
+          }
+      }
+  );
+
+=head1 AUTHOR
+
+Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
+
+=head1 SEE ALSO
+
+L<AnySan>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

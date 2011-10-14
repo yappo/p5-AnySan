@@ -76,6 +76,7 @@ Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
 
 =head1 SEE ALSO
 
+L<AnySan::Receive>,
 L<AnyEvent>
 
 =head1 LICENSE

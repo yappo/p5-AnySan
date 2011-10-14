@@ -94,3 +94,47 @@ sub send_message {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+AnySan::Provider::Twitter - AnySan provide Twitter
+
+=head1 SYNOPSIS
+
+  use AnySan;
+  use AnySan::Provider::Twitter;
+
+  my $twitter = twitter
+      key      => 'example1', # you can write, unique key *required
+
+      # AnyEvent::Twitter::Stream's options
+      consumer_key     => 'twitter consumer_key', # *required
+      consumer_secret  => 'twitter consumer_secret', # *required
+      token            => 'twitter token', # *required
+      token_secret     => 'twitter token_secret', # *required
+
+      method           => 'filter', # default is 'userstream' *required
+      track            => 'keyword',
+      follow           => '....',
+      locations        => '....',
+      timeout          => $timeout,
+  ;
+
+  $irc->send_message('twitter message');
+  $irc->send_message('twitter message', %AnyEvent_Twitter_requires_options);
+
+=head1 AUTHOR
+
+Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
+
+=head1 SEE ALSO
+
+L<AnySan>, L<AnyEvent::Twitter>, L<AnyEvent::Twitter::Stream>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
