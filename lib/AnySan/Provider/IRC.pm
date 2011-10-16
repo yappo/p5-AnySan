@@ -56,8 +56,9 @@ sub irc {
                 nickname      => $config{nickname},
                 from_nickname => $nickname,
                 attribute     => {
-                    channel => $channel,
-                    command => $param->{command},
+                    channel    => $channel,
+                    command    => $param->{command},
+                    raw_params => $param,
                 },
                 cb            => sub { $self->event_callback($receive, @_) },
             );
