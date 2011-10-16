@@ -16,6 +16,7 @@ sub irc {
         client => undef,
         config => \%config,
     );
+    $self->{config}{wait_queue_size} ||= 100;
 
     my $port         = $config{port}     || 6667;
     my $nickname     = $config{nickname};
@@ -94,21 +95,53 @@ sub event_callback {
         } else {
             $send = mk_msg undef, $cmd => $receive->attribute('channel'), $msg;
         }
-        $self->{client}->send_raw($send);
+        $self->_send_raw($send);
     }
+}
+
+my $LAST_SEND_TIME = 0;
+my @SEND_QUEUE;
+my $SEND_TIMER;
+sub _run {
+    my($self, $cb) = @_;
+    if (scalar(@SEND_QUEUE) >= $self->{config}{wait_queue_size}) {
+        return;
+    }
+    if (time() - $LAST_SEND_TIME <= 0 || $SEND_TIMER) {
+        $SEND_TIMER ||= AnyEvent->timer(
+            after    => 1,
+            interval => 1,
+            cb       => sub {
+                (pop @SEND_QUEUE)->();
+                $LAST_SEND_TIME = time();
+                $SEND_TIMER = undef unless @SEND_QUEUE;
+            },
+        );
+        push @SEND_QUEUE, $cb;
+        return;
+    }
+    $cb->();
+    $LAST_SEND_TIME = time();
+}
+
+sub _send_raw {
+    my($self, $send, %args) = @_;
+    $self->_run(sub {
+        $self->{client}->send_raw($send);
+    });
 }
 
 sub send_message {
     my($self, $message, %args) = @_;
-
-    my $type = $args{privmsg} ? 'PRIVMSG' : 'NOTICE';
-
-    $self->{client}->send_chan(
-        $args{channel},
-        $type,
-        $args{channel},
-        $message,
-    );
+    $self->_run(sub {
+        my $type = $args{privmsg} ? 'PRIVMSG' : 'NOTICE';
+        $self->{client}->send_chan(
+            $args{channel},
+            $type,
+            $args{channel},
+            $message,
+        );
+    });
 }
 
 sub join_channel {
@@ -140,6 +173,7 @@ AnySan::Provider::IRC - AnySan provide IRC protocol
       key      => 'example1', # you can write, unique key *required
       nickname => 'AnySan1',  # irc nickname *required
       recive_commands => [ 'PRIVMSG', 'NOTICE' ], # default is [ 'PRIVMSG' ]
+      wait_queue_size => 100, # default is 100
       channels => {
           '#anysan1' => {},
           '#anysan2' => {
