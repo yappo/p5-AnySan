@@ -113,7 +113,7 @@ sub _run {
             after    => 1,
             interval => 1,
             cb       => sub {
-                (pop @SEND_QUEUE)->();
+                (shift @SEND_QUEUE)->();
                 $LAST_SEND_TIME = time();
                 $SEND_TIMER = undef unless @SEND_QUEUE;
             },
