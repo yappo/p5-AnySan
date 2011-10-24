@@ -14,10 +14,15 @@ inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
+inc/Module/Install/GithubMeta.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
+inc/Module/Install/ReadmeFromPod.pm
+inc/Module/Install/ReadmeMarkdownFromPod.pm
+inc/Module/Install/Repository.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
+inc/Pod/Markdown.pm
 lib/AnySan.pm
 lib/AnySan/Provider.pm
 lib/AnySan/Provider/FriendFeed.pm
@@ -27,6 +32,7 @@ lib/AnySan/Receive.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+README.mkdn
 t/00_compile.t
 xt/01_podspell.t
 xt/02_perlcritic.t
