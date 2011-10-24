@@ -1,0 +1,48 @@
+# NAME
+
+AnySan - ANY mesSaging protocol hANdler
+
+# SYNOPSIS
+
+  # echo bot
+  use AnySan;
+  use AnySan::Provider::IRC;
+
+  my $irc = irc
+      'chat.example.net',
+      key      => 'example1',
+      nickname => 'AnySan1',
+      channels => {
+          '#anysan1' => {},
+          '#anysan2' => {},
+      };
+
+  AnySan->register_listener(
+      echo => {
+          cb => sub {
+              my $receive = shift;
+              return unless $receive->message =~ /^!yappo/;
+              $receive->send_replay($receive->message);
+          }
+      }
+  );
+
+  AnySan->run;
+
+# DESCRIPTION
+
+AnySan is [AnyEvent](http://search.cpan.org/perldoc?AnyEvent) based some messaging protocol handling program tool kit.
+
+# AUTHOR
+
+Kazuhiro Osawa <yappo <at> shibuya <döt> pl>
+
+# SEE ALSO
+
+[AnySan::Receive](http://search.cpan.org/perldoc?AnySan::Receive),
+[AnyEvent](http://search.cpan.org/perldoc?AnyEvent)
+
+# LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
