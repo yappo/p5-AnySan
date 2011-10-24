@@ -1,4 +1,10 @@
 Revision history for Perl extension AnySan
 
+0.02    2011-10-24T11:46:11+09:00
+        - Excess Flood defender
+        - added to params in attribute
+        - add dependence
+        - modernize Makefile.PL
+
 0.01    Tue Oct 27 16:30:31 2009
         - original version

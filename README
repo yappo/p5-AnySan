@@ -1,27 +1,43 @@
-This is Perl module AnySan.
+NAME
+    AnySan - ANY mesSaging protocol hANdler
 
-INSTALLATION
+SYNOPSIS
+      # echo bot
+      use AnySan;
+      use AnySan::Provider::IRC;
 
-AnySan installation is straightforward. If your CPAN shell is set up,
-you should just be able to do
+      my $irc = irc
+          'chat.example.net',
+          key      => 'example1',
+          nickname => 'AnySan1',
+          channels => {
+              '#anysan1' => {},
+              '#anysan2' => {},
+          };
 
-    % cpan AnySan
+      AnySan->register_listener(
+          echo => {
+              cb => sub {
+                  my $receive = shift;
+                  return unless $receive->message =~ /^!yappo/;
+                  $receive->send_replay($receive->message);
+              }
+          }
+      );
 
-Download it, unpack it, then build it as per the usual:
+      AnySan->run;
 
-    % perl Makefile.PL
-    % make && make test
+DESCRIPTION
+    AnySan is AnyEvent based some messaging protocol handling program tool
+    kit.
 
-Then install it:
+AUTHOR
+    Kazuhiro Osawa <yappo <at> shibuya <döt> pl>
 
-    % make install
+SEE ALSO
+    AnySan::Receive, AnyEvent
 
-DOCUMENTATION
+LICENSE
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
-AnySan documentation is available as in POD. So you can do:
-
-    % perldoc AnySan
-
-to read the documentation online with your favorite pager.
-
-Kazuhiro Osawa
