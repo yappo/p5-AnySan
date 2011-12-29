@@ -44,7 +44,6 @@ sub irc {
     $con->reg_cb (
         'irc_*' => sub {
             my(undef, $param) = @_;
-warn $param->{command};
             return if $param->{command} =~ /\A[0-9]+\z/;
             return unless $recive_commands{uc($param->{command})};
             my($channel, $message) = @{ $param->{params} };
