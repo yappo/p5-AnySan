@@ -21,6 +21,8 @@ sub irc {
     my $port         = $config{port}     || 6667;
     my $nickname     = $config{nickname};
     my $instance_key = $config{key}      || "$host:$port";
+    $self->{config}{interval} ||= 2;
+    $self->{config}{interval} = 2 unless $self->{config}{interval} =~ /\A[0-9]+\z/;
 
     my %recive_commands = map {
         uc($_) => 1,
@@ -111,7 +113,7 @@ sub _run {
     if (time() - $LAST_SEND_TIME <= 0 || $SEND_TIMER) {
         $SEND_TIMER ||= AnyEvent->timer(
             after    => 1,
-            interval => 2,
+            interval => $self->{config}{interval},
             cb       => sub {
                 (shift @SEND_QUEUE)->();
                 $LAST_SEND_TIME = time();
@@ -174,7 +176,8 @@ AnySan::Provider::IRC - AnySan provide IRC protocol
       key      => 'example1', # you can write, unique key *required
       nickname => 'AnySan1',  # irc nickname *required
       recive_commands => [ 'PRIVMSG', 'NOTICE' ], # default is [ 'PRIVMSG' ]
-      wait_queue_size => 100, # default is 100
+      interval        => 2, # default is 2(sec), defence of Excess Flood
+      wait_queue_size => 100, # default is 100, for send message buffer size
       channels => {
           '#anysan1' => {},
           '#anysan2' => {
