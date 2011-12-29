@@ -44,6 +44,7 @@ sub irc {
     $con->reg_cb (
         'irc_*' => sub {
             my(undef, $param) = @_;
+warn $param->{command};
             return if $param->{command} =~ /\A[0-9]+\z/;
             return unless $recive_commands{uc($param->{command})};
             my($channel, $message) = @{ $param->{params} };
@@ -111,7 +112,7 @@ sub _run {
     if (time() - $LAST_SEND_TIME <= 0 || $SEND_TIMER) {
         $SEND_TIMER ||= AnyEvent->timer(
             after    => 1,
-            interval => 1,
+            interval => 2,
             cb       => sub {
                 (shift @SEND_QUEUE)->();
                 $LAST_SEND_TIME = time();
