@@ -33,15 +33,17 @@ sub irc {
     my $con = AnyEvent::IRC::Client->new;
     $self->{client} = $con;
 
-    $con->reg_cb(
-        connect =>sub {
-            my ($con, $err) = @_;
-            if (defined $err) {
-                warn "connect error: $err\n";
-                return;
-            }
+    $config{connect_cb} ||= sub {
+        my ($con, $err) = @_;
+        if (defined $err) {
+            warn "connect error: $err\n";
+            return;
         }
-    );
+    };
+    $con->reg_cb( connect => $config{connect_cb} );
+    if ( $config{disconnect_cb} ) {
+        $con->reg_cb( disconnect => $config{disconnect_cb} );
+    }
 
     $con->reg_cb (
         'irc_*' => sub {
