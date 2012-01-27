@@ -180,6 +180,8 @@ AnySan::Provider::IRC - AnySan provide IRC protocol
       recive_commands => [ 'PRIVMSG', 'NOTICE' ], # default is [ 'PRIVMSG' ]
       interval        => 2, # default is 2(sec), defence of Excess Flood
       wait_queue_size => 100, # default is 100, for send message buffer size
+      connect_cb      => sub {}, # optional
+      disconnect_cb   => sub {}, # optional
       channels => {
           '#anysan1' => {},
           '#anysan2' => {
