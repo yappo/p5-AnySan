@@ -15,6 +15,9 @@ sub irc {
     my $self = __PACKAGE__->new(
         client => undef,
         config => \%config,
+        LAST_SEND_TIME => 0,
+        SEND_QUEUE     => [],
+        SEND_TIMER     => 0,
     );
     $self->{config}{wait_queue_size} ||= 100;
 
@@ -104,29 +107,26 @@ sub event_callback {
     }
 }
 
-my $LAST_SEND_TIME = 0;
-my @SEND_QUEUE;
-my $SEND_TIMER;
 sub _run {
     my($self, $cb) = @_;
-    if (scalar(@SEND_QUEUE) >= $self->{config}{wait_queue_size}) {
+    if (scalar(@{ $self->{SEND_QUEUE} }) >= $self->{config}{wait_queue_size}) {
         return;
     }
-    if (time() - $LAST_SEND_TIME <= 0 || $SEND_TIMER) {
-        $SEND_TIMER ||= AnyEvent->timer(
+    if (time() - $self->{LAST_SEND_TIME} <= 0 || $self->{SEND_TIMER}) {
+        $self->{SEND_TIMER} ||= AnyEvent->timer(
             after    => 1,
             interval => $self->{config}{interval},
             cb       => sub {
-                (shift @SEND_QUEUE)->();
-                $LAST_SEND_TIME = time();
-                $SEND_TIMER = undef unless @SEND_QUEUE;
+                (shift @{ $self->{SEND_QUEUE} })->();
+                $self->{LAST_SEND_TIME} = time();
+                $self->{SEND_TIMER} = undef unless @{ $self->{SEND_QUEUE} };
             },
         );
-        push @SEND_QUEUE, $cb;
+        push @{ $self->{SEND_QUEUE} }, $cb;
         return;
     }
     $cb->();
-    $LAST_SEND_TIME = time();
+    $self->{LAST_SEND_TIME} = time();
 }
 
 sub _send_raw {
