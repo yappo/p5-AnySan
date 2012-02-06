@@ -1,5 +1,8 @@
 Revision history for Perl extension AnySan
 
+0.06
+        - change name of connect/disconnect callback option name
+
 0.05    2012-02-06T17:14:42+09:00
         - add connect/disconnect callback option (kazeburo++)
         - send message buffer move to context

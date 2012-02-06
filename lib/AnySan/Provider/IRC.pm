@@ -36,16 +36,16 @@ sub irc {
     my $con = AnyEvent::IRC::Client->new;
     $self->{client} = $con;
 
-    $config{connect_cb} ||= sub {
+    $config{on_connect} ||= sub {
         my ($con, $err) = @_;
         if (defined $err) {
             warn "connect error: $err\n";
             return;
         }
     };
-    $con->reg_cb( connect => $config{connect_cb} );
-    if ( $config{disconnect_cb} ) {
-        $con->reg_cb( disconnect => $config{disconnect_cb} );
+    $con->reg_cb( connect => $config{on_connect} );
+    if ( $config{on_disconnect} ) {
+        $con->reg_cb( disconnect => $config{on_disconnect} );
     }
 
     $con->reg_cb (
@@ -180,8 +180,8 @@ AnySan::Provider::IRC - AnySan provide IRC protocol
       recive_commands => [ 'PRIVMSG', 'NOTICE' ], # default is [ 'PRIVMSG' ]
       interval        => 2, # default is 2(sec), defence of Excess Flood
       wait_queue_size => 100, # default is 100, for send message buffer size
-      connect_cb      => sub {}, # optional
-      disconnect_cb   => sub {}, # optional
+      on_connect      => sub {}, # optional
+      on_disconnect   => sub {}, # optional
       channels => {
           '#anysan1' => {},
           '#anysan2' => {
