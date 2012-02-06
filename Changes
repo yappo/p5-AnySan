@@ -1,5 +1,9 @@
 Revision history for Perl extension AnySan
 
+0.05    2012-02-06T17:14:42+09:00
+        - add connect/disconnect callback option (kazeburo++)
+        - send message buffer move to context
+
 0.04    2011-12-29T17:40:35+09:00
         - add interval option on IRC ( for Excess Flood defender )
 
