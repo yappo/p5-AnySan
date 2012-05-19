@@ -31,19 +31,28 @@ sub irc {
         uc($_) => 1,
     } @{ $config{recive_commands} || [ 'PRIVMSG' ] };
 
-    my @channels = keys %{ $config{channels} };
-
     my $con = AnyEvent::IRC::Client->new;
     $self->{client} = $con;
 
-    $config{on_connect} ||= sub {
+    my $on_connect = $config{on_connect} ||= sub {
         my ($con, $err) = @_;
         if (defined $err) {
             warn "connect error: $err\n";
             return;
         }
     };
-    $con->reg_cb( connect => $config{on_connect} );
+    $con->reg_cb( connect => sub {
+        my ($con, $err) = @_;
+        $on_connect->($con, $err);
+        return if defined $err;
+
+        # join channels
+        while (my($channel, $conf) = each %{ $config{channels} }) {
+            my $conf = $config{channels}->{$channel};
+            warn "join channel: $channel";
+            $self->join_channel( $channel, $conf->{key} );
+        }
+    } );
     if ( $config{on_disconnect} ) {
         $con->reg_cb( disconnect => $config{on_disconnect} );
     }
@@ -78,13 +87,6 @@ sub irc {
         nick     => $nickname,
         password => $config{password},
     });
-
-    # join channels
-    for my $channel (@channels) {
-        my $conf = $config{channels}->{$channel};
-        warn "join channel: $channel";
-        $self->join_channel( $channel, $conf->{key} );
-    }
 
     return $self;
 }
