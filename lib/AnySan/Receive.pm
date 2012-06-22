@@ -35,7 +35,7 @@ __END__
 
 =head1 NAME
 
-AnySan::Receive - recive messages manipulate object
+AnySan::Receive - receive messages manipulate object
 
 =head1 SYNOPSIS
 

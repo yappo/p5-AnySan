@@ -85,6 +85,7 @@ sub irc {
     # connect server
     $con->connect ($host, $port, {
         nick     => $nickname,
+        user     => $config{user},
         password => $config{password},
     });
 
