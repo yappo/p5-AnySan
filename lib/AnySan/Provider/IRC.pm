@@ -48,6 +48,7 @@ sub irc {
 
         # join channels
         while (my($channel, $conf) = each %{ $config{channels} }) {
+            sleep $self->{config}{interval};
             my $conf = $config{channels}->{$channel};
             warn "join channel: $channel";
             $self->join_channel( $channel, $conf->{key} );
