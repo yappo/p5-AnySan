@@ -1,5 +1,8 @@
 Revision history for Perl extension AnySan
 
+0.09    2013-03-07T20:43:06+09:00
+        - add join Excess Flood defender on startup
+
 0.08    2012-06-22T13:55:52+09:00
         - added user option on IRC (kuzuha++)
         - fixed documentation typo (kuzuha++)
