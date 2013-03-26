@@ -47,11 +47,20 @@ sub irc {
         return if defined $err;
 
         # join channels
-        while (my($channel, $conf) = each %{ $config{channels} }) {
-            sleep $self->{config}{interval};
-            my $conf = $config{channels}->{$channel};
-            warn "join channel: $channel";
-            $self->join_channel( $channel, $conf->{key} );
+        my @channels = keys %{ $config{channels} };
+        if ( @channels ) {
+            my $join_on_connect; $join_on_connect = AnyEvent->timer(
+                after    => $self->{config}{interval},
+                interval => $self->{config}{interval},
+                cb       => sub {
+                    my $channel = shift @channels;
+                    warn "join channel: $channel";
+                    $self->join_channel( $channel, $config{channels}->{$channel}->{key} );
+                    if ( !@channels ) {
+                        undef $join_on_connect;
+                    }                
+                } 
+            );
         }
     } );
     if ( $config{on_disconnect} ) {
