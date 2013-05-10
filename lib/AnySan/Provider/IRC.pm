@@ -24,7 +24,7 @@ sub irc {
     my $port         = $config{port}     || 6667;
     my $nickname     = $config{nickname};
     my $instance_key = $config{key}      || "$host:$port";
-    $self->{config}{interval} ||= 2;
+    $self->{config}{interval} = defined $config{interval} ? $config{interval} : 2;
     $self->{config}{interval} = 2 unless $self->{config}{interval} =~ /\A[0-9]+\z/;
 
     my %recive_commands = map {
