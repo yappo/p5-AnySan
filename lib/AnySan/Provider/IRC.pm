@@ -58,8 +58,8 @@ sub irc {
                     $self->join_channel( $channel, $config{channels}->{$channel}->{key} );
                     if ( !@channels ) {
                         undef $join_on_connect;
-                    }                
-                } 
+                    }
+                }
             );
         }
     } );
