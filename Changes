@@ -1,5 +1,10 @@
 Revision history for Perl extension AnySan
 
+0.10    2013-05-23T18:00:42+09:00
+        - use AnyEvent->timer for join channel on connect to IRC Server (kazeburo++)
+        - add enable_ssl option on IRC (mix++)
+        - interval option of Providor::IRC can be specified 0 (songmu++)
+
 0.09    2013-03-07T20:43:06+09:00
         - add join Excess Flood defender on startup
 
