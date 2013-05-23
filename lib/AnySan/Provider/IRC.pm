@@ -189,6 +189,7 @@ AnySan::Provider::IRC - AnySan provide IRC protocol
   my $irc = irc
       'chat.example.net', # irc servername *required
       port     => 6667, # default is 6667
+      enable_ssl => 0, # 1 = use ssl socket, default is no use ssl
       password => 'server_password',
       key      => 'example1', # you can write, unique key *required
       nickname => 'AnySan1',  # irc nickname *required
