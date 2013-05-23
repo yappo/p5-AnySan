@@ -92,6 +92,8 @@ sub irc {
         }
     );
 
+    $con->enable_ssl if $config{enable_ssl}; # enable ssl
+
     # connect server
     $con->connect ($host, $port, {
         nick     => $nickname,
